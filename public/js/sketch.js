@@ -12,8 +12,9 @@ var grid;
 var cols;
 var rows;
 var w = 100;
-var done = true;
+var done = false;
 var moves = 0;
+var movesPlayed = [];
 // Setup for the canvas
 function setup() {
   createCanvas(301, 301);
@@ -27,6 +28,18 @@ function setup() {
   }
   //Default center is going to be black
   grid[1][1] = new Cell(1, 1, w, 1);
+
+  //Random other cell that is generated
+  randX = Math.floor((Math.random() * 3));
+  randY = Math.floor((Math.random() * 3));
+  grid[randX][randY] = new Cell(randX, randY, w, 1);
+
+  //Random other cell that is generated
+  randX = Math.floor((Math.random() * 3));
+  randY = Math.floor((Math.random() * 3));
+  grid[randX][randY] = new Cell(randX, randY, w, 1);
+
+  //Random other cell that is generated
   randX = Math.floor((Math.random() * 3));
   randY = Math.floor((Math.random() * 3));
   grid[randX][randY] = new Cell(randX, randY, w, 1);
@@ -68,9 +81,9 @@ function mousePressed() {
 }
 
 // Check if it's the end of the game
-function gameStart() {
+/*function gameStart() {
   done = false;
-}
+}*/
 
 function checkEnd() {
     for (var i = 0; i < cols; i++) {
