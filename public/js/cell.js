@@ -38,3 +38,6 @@ Cell.prototype.invertColor = function() {
 Cell.prototype.isColored = function() {
   return this.colored;
 }
+
+if (typeof(module) != 'undefined')
+  module.exports = Cell;
