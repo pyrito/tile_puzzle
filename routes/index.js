@@ -14,7 +14,6 @@ router.post('/verify', function(req, res, next) {
 	var rows = 3;
 	var cols = 3;
 	var done = false;
-	console.log(moves);
 
 	// Verify if the moves are ok, gotta simulate the board
 	var grid = new Array(3);
@@ -22,6 +21,7 @@ router.post('/verify', function(req, res, next) {
 		grid[i] = new Array(3);
 	}
 
+	// We are copying the initial game state
 	for (var i = 0; i < cols; i++) {
 		for (var j = 0; j < rows; j++) {
 			if (initialGrid[i][j] == 0)
@@ -40,8 +40,6 @@ router.post('/verify', function(req, res, next) {
 		for (var x = -1; x < 2; x++) {
 			for (var y = -1; y < 2;  y++) {
 				if ((i + x) >= 0 && (j + y) >= 0 && (i + x) < cols && (j + y) < rows && (Math.abs(x) !=  Math.abs(y))) {
-					console.log("grid x is: ", xCord+x);
-					console.log("grid y is: ", yCord+y);
 					grid[xCord+x][yCord+y].invertColor();
 				}
 			}
