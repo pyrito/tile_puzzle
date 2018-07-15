@@ -38,12 +38,13 @@ function setup() {
 
   //Random other cell that is generated
   // Prob has something to do with the coordinates
+  /*
   for (var k = 0; k < randomNum; k++){
     randX = Math.floor((Math.random() * 3));
     randY = Math.floor((Math.random() * 3));
     grid[randX][randY] = new Cell(randX, randY, w, 1);
   }
-
+  */
 
   for (var i = 0; i < cols; i++){
     for (var j = 0; j < rows; j++){

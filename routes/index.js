@@ -1,13 +1,48 @@
 var express = require('express');
 var router = express.Router();
 var Cell = require('../public/js/cell.js');
+var rp = require("request-promise");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+	// When we first enter the puzzle we have to make this check
+	if (!req.query.token) {
+		// no token?
+		res.redirect(process.env.HOST_SERVICE);
+	} else {
+		console.log("this is " + process.env.PUZZLE_SECRET);
+
+		rp({
+			method: "GET",
+			//uri: process.env.HOST_SERVICE+"/api/info",
+			uri: "http://host:3000/api/info",
+			qs: {
+				secret: process.env.PUZZLE_SECRET,
+				token: req.query.token,
+			},
+			json: true
+		}).then(function(data) {
+			if (data.status == "success" && data.access) {
+				res.redirect("/granted");
+			} else {
+				// does not have access or something happened
+				res.redirect("/denied");
+				res.redirect(process.env.HOST_SERVICE);
+			}
+		}).catch(function(data) {
+			res.send(data.error.message);
+		});
+	} 
+});
+
+router.get('/granted', function(req, res, next) {
 	res.render('index', { title: 'Express' });
 });
 
-/* GET home page. */
+router.get('/denied' ,function(req, res, next) {
+	res.render('denied', { title: 'Sorry'});
+});
+
 router.post('/verify', function(req, res, next) {
 	var moves = req.body.moves;
 	var initialGrid = req.body.grid;
@@ -63,6 +98,26 @@ router.post('/verify', function(req, res, next) {
 	res.json({
 		status: 'success'
 	})
+
+	res.redirect('/confirm');
+});
+
+router.get('/confirm', function(req, res, next) {
+	// Once the puzzle is completed we send this information over
+	if (!req.session.token) {
+		// need to authenticate
+		res.redirect(process.env.HOST_SERVICE);
+		return;
+	}
+	rp({
+		method: "GET",
+		uri: process.env.HOST_SERVICE+"/api/completed",
+		qs: {
+			secret: process.env.PUZZLE_SECRET,
+			token: req.session.token,
+		},
+		json: true
+	});
 });
 
 module.exports = router;
