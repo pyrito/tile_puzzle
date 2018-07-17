@@ -23,6 +23,8 @@ router.get('/', function(req, res, next) {
 			json: true
 		}).then(function(data) {
 			if (data.status == "success" && data.access) {
+				req.session.token = data.data.token;
+				req.session.name = data.data.name;
 				res.redirect("/granted");
 			} else {
 				// does not have access or something happened
@@ -30,12 +32,15 @@ router.get('/', function(req, res, next) {
 				res.redirect(process.env.HOST_SERVICE);
 			}
 		}).catch(function(data) {
+			console.log("error");
 			res.send(data.error.message);
 		});
 	} 
 });
 
 router.get('/granted', function(req, res, next) {
+	//console.log("saved token is: " + req.session.token);
+	req.session.save();
 	res.render('index', { title: 'Express' });
 });
 
@@ -95,29 +100,52 @@ router.post('/verify', function(req, res, next) {
 		}
 	}
 
+	/*
 	res.json({
 		status: 'success'
 	})
+	*/
+	//console.log("verify token is: " + req.session.token);
 
 	res.redirect('/confirm');
 });
 
 router.get('/confirm', function(req, res, next) {
 	// Once the puzzle is completed we send this information over
+	console.log(req.session.token);
 	if (!req.session.token) {
 		// need to authenticate
+		console.log("iciadads");
 		res.redirect(process.env.HOST_SERVICE);
 		return;
 	}
 	rp({
 		method: "GET",
-		uri: process.env.HOST_SERVICE+"/api/completed",
+		//uri: process.env.HOST_SERVICE+"/api/completed",
+		uri: "http://host:3000/api/completed",
 		qs: {
 			secret: process.env.PUZZLE_SECRET,
 			token: req.session.token,
 		},
 		json: true
+	}).then(function(data) {
+			if (data.status == "success") {
+				console.log("success");
+				res.redirect("/success");
+			} else {
+				console.log("failure");
+				// does not have access or something happened
+				res.redirect("/denied");
+				//res.redirect(process.env.HOST_SERVICE);
+			}
+		}).catch(function(data) {
+			res.send(data.error.message);
 	});
+
+});
+
+router.get('/success', function(req, res, next) {
+	res.render('success', {title: 'Success'});
 });
 
 module.exports = router;
