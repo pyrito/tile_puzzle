@@ -1,7 +1,7 @@
 # tile_puzzle
 
 Steps to run:
-1. Install Docker CE (https://www.docker.com/get-docker),a Python version < 3 (https://www.python.org/downloads/), and http://flask.pocoo.org/docs/1.0/installation/. 
+1. Install Docker CE (https://www.docker.com/get-docker),
 2. Clone this github repo by running
 3. Add the following to the docker-compose.yml file in Florian's host repo:
 
