@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
 	// When we first enter the puzzle we have to make this check
 	if (!req.query.token) {
 		// no token?
-		res.redirect(process.env.HOST_SERVICE);
+		res.redirect(process.env.REDIRECT_ON_COMPETE);
 	} else {
 		console.log("this is " + process.env.PUZZLE_SECRET);
 
@@ -31,13 +31,13 @@ router.get('/', function(req, res, next) {
 			} else {
 				// does not have access or something happened
 				res.redirect("/denied");
-				res.redirect(process.env.HOST_SERVICE);
+				res.redirect(process.env.REDIRECT_ON_COMPETE);
 			}
 		}).catch(function(data) {
 			console.log("error");
 			res.send(data.error.message);
 		});
-	} 
+	}
 });
 
 router.get('/granted', function(req, res, next) {
@@ -74,11 +74,11 @@ router.post('/verify', function(req, res, next) {
 		}
 	}
 
- 	// Now we run through the moves 
+ 	// Now we run through the moves
  	for (var k = 0; k < moves.length; k++){
  		var xCord = moves[k].x;
  		var yCord = moves[k].y;
- 		
+
 		grid[xCord][yCord].invertColor();
 		for (var x = -1; x < 2; x++) {
 			for (var y = -1; y < 2;  y++) {
@@ -87,7 +87,7 @@ router.post('/verify', function(req, res, next) {
 				}
 			}
 		}
- 	} 
+ 	}
 
 	// Check if the puzzle is done
 	for (var i = 0; i < cols; i++) {
@@ -120,7 +120,7 @@ router.get('/confirm', function(req, res, next) {
 	if (!req.session.token) {
 		// need to authenticate
 		console.log("iciadads");
-		res.redirect(process.env.HOST_SERVICE);
+		res.redirect(process.env.REDIRECT_ON_COMPETE);
 		return;
 	}
 	rp({
@@ -141,7 +141,7 @@ router.get('/confirm', function(req, res, next) {
 				console.log("failure");
 				// does not have access or something happened
 				//res.redirect("/denied");
-				res.redirect(process.env.HOST_SERVICE);
+				res.redirect(process.env.REDIRECT_ON_COMPETE);
 			}
 		}).catch(function(data) {
 			res.send(data.error.message);
