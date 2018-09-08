@@ -134,6 +134,7 @@ function checkEnd() {
   .then(function (data) {  
     console.log('Request: ', data.status);  
     if (data.status === 'success') {
+      window.location.href = data.url;
       done = true;
     }
     else {
