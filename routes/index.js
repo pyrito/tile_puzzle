@@ -111,10 +111,6 @@ router.post('/verify', function(req, res, next) {
 	console.log("verify token is: " + req.session.token);
 	console.log(req.session);
 
-	res.redirect('/confirm');
-});
-
-router.get('/confirm', function(req, res, next) {
 	// Once the puzzle is completed we send this information over
 	console.log(req.session);
 	if (!req.session.token) {
@@ -136,12 +132,16 @@ router.get('/confirm', function(req, res, next) {
 
 			if (data.status == "success") {
 				console.log("success");
-				res.redirect("/success");
+				res.json({
+					status: 'success',
+					url: process.env.REDIRECT_ON_COMPETE
+				});
 			} else {
 				console.log("failure");
+				res.json({
+					status: 'failure'
+				});
 				// does not have access or something happened
-				//res.redirect("/denied");
-				res.redirect(process.env.REDIRECT_ON_COMPETE);
 			}
 		}).catch(function(data) {
 			res.send(data.error.message);
